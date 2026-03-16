@@ -10,10 +10,10 @@ export const useWebSocket = (pollId) => {
 
     const fetchResults = async () => {
       try {
-        const response = await fetch(`https://poll-app-worker.urlcut01.workers.dev/api/polls/${pollId}`);
+        const response = await fetch(`https://poll-app-worker.urlcut01.workers.dev/api/polls/${pollId}/room/state`);
         if (response.ok) {
           const poll = await response.json();
-          setResults(poll.votes || []);
+          setResults(poll || {});
           setIsConnected(true);
         }
       } catch (e) {

@@ -149,6 +149,13 @@
   margin: 0 0 1.5rem 0;
 }
 
+.expiryText {
+  color: rgba(255,255,255,0.25);
+  font-size: 0.75rem;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: 0.03em;
+}
+
 .optionsList {
   display: flex;
   flex-direction: column;

@@ -44,6 +44,12 @@ export default function Poll() {
     fetchPoll();
   }, [id]);
 
+  useEffect(() => {
+    if (results && results.votes && results.votes.length > 0 && poll) {
+      setPoll(prev => ({ ...prev, votes: results.votes, totalVotes: results.totalVotes }));
+    }
+  }, [results]);
+
   const handleVote = async (optionIndex) => {
     if (hasVotedRef.current) return;
     setSelectedOption(optionIndex);
@@ -58,6 +64,11 @@ export default function Poll() {
       localStorage.setItem(`selected_${id}`, optionIndex.toString());
       hasVotedRef.current = true;
       setHasVoted(true);
+      setPoll(prev => {
+        const newVotes = [...prev.votes];
+        newVotes[optionIndex]++;
+        return { ...prev, votes: newVotes, totalVotes: prev.totalVotes + 1 };
+      });
     } catch {
       setSelectedOption(null);
     }
@@ -75,6 +86,15 @@ export default function Poll() {
     setTimeout(() => setCopiedId(false), 2000);
   };
 
+  const getTimeRemaining = (expiresAt) => {
+    const diff = expiresAt - Date.now();
+    if (diff <= 0) return 'Expired';
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    if (hours > 0) return `Expires in ${hours}h ${minutes}m`;
+    return `Expires in ${minutes}m`;
+  };
+
   if (loading) return (
     <div className="center">
       <div className="spinner" />
@@ -82,20 +102,33 @@ export default function Poll() {
     </div>
   );
 
-  if (error) return (
-  <div className="errorPage">
-    <div className="errorContainer">
-      <div className="errorCode">404</div>
-      <h2 className="errorTitle">Poll not found</h2>
-      <p className="errorSubtitle">This poll doesn't exist or has expired.</p>
-      <a href="/" className="errorBtn">← Create a new poll</a>
+  if (error) {
+  if (error === 'Poll has expired') return (
+    <div className="errorPage">
+      <div className="errorContainer">
+        <div className="errorCode">⏰</div>
+        <h2 className="errorTitle">Poll Expired</h2>
+        <p className="errorSubtitle">This poll has expired after 24 hours.</p>
+        <a href="/" className="errorBtn">← Create a new poll</a>
+      </div>
     </div>
-  </div>
-);
+  );
+  
+  return (
+    <div className="errorPage">
+      <div className="errorContainer">
+        <div className="errorCode">404</div>
+        <h2 className="errorTitle">Poll not found</h2>
+        <p className="errorSubtitle">This poll doesn't exist or has expired.</p>
+        <a href="/" className="errorBtn">← Create a new poll</a>
+      </div>
+    </div>
+  );
+}
 
   if (!poll) return null;
 
-  const currentVotes = results.length > 0 ? results : poll.votes;
+  const currentVotes = poll.votes;
   const totalVotes = currentVotes.reduce((a, b) => a + b, 0);
   const maxVotes = Math.max(...currentVotes, 1);
 
@@ -119,6 +152,10 @@ export default function Poll() {
         </div>
 
         <h1 className="question">{poll.question}</h1>
+
+        {poll.expiresAt && (
+          <p className="expiryText">{getTimeRemaining(poll.expiresAt)}</p>
+        )}
 
         {!hasVoted && (
           <p className="hint">Choose your answer ↓</p>

@@ -5,7 +5,6 @@ A real-time polling application built with React and Cloudflare Workers.
 ## 🚀 Live Demo
 
 - **Frontend:** https://poll-app.pages.dev
-- **Backend:** https://poll-app-worker.urlcut01.workers.dev
 
 ## 🛠️ Tech Stack
 

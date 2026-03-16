@@ -71,12 +71,14 @@ export default {
         options,
         votes: new Array(options.length).fill(0),
         totalVotes: 0,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000  // 24 hours
       };
       
       console.log('Creating poll:', poll);
       
-      await env.POLLS_KV.put(pollId, JSON.stringify(poll));
+      await env.POLLS_KV.put(pollId, JSON.stringify(poll), { expirationTtl: 86400 });
+      // 86400 seconds = 24 hours - KV will auto-delete after this time
       
       return new Response(JSON.stringify({ pollId }), {
         status: 201,
@@ -106,6 +108,17 @@ export default {
       }
       
       const poll = JSON.parse(pollData);
+      
+      // Check if poll has expired
+      if (poll.expiresAt && Date.now() > poll.expiresAt) {
+        console.log('Poll expired:', pollId);
+        await env.POLLS_KV.delete(pollId);
+        return new Response(JSON.stringify({ error: 'Poll has expired' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      
       console.log('Retrieved poll:', poll);
       
       return new Response(pollData, {

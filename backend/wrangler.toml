@@ -1,0 +1,15 @@
+name = "poll-app-worker"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[durable_objects.bindings]]
+name = "POLL_ROOM"
+class_name = "PollRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PollRoom"]
+
+[[kv_namespaces]]
+binding = "POLLS_KV"
+id = "305de325475647a6ac0143516506dc35"

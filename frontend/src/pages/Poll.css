@@ -1,0 +1,578 @@
+.page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+  font-family: "'DM Sans', sans-serif";
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(240,192,64,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.center {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  gap: 1rem;
+  font-family: "'DM Sans', sans-serif";
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255,255,255,0.06);
+  border-top: 3px solid #f0c040;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingText {
+  color: rgba(255,255,255,0.3);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.errorIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,80,80,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff8080;
+  font-size: 1.2rem;
+}
+
+.errorText {
+  color: rgba(255,255,255,0.4);
+  margin: 0;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.liveDot.live {
+  background: #4ade80;
+  box-shadow: 0 0 0 0 rgba(74,222,128,0.4);
+  animation: livePulse 2s infinite;
+}
+
+.liveDot.offline {
+  background: #6b7280;
+}
+
+.liveText {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.liveText.live {
+  color: #4ade80;
+}
+
+.liveText.offline {
+  color: #6b7280;
+}
+
+.voteBadge {
+  padding: 0.3rem 0.8rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 100px;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.question {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  font-family: "'DM Serif Display', serif";
+}
+
+.hint {
+  color: rgba(255,255,255,0.25);
+  font-size: 0.85rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.optionBtn {
+  position: relative;
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+.optionBtn:hover:not(:disabled) {
+  border-color: rgba(240,192,64,0.3);
+}
+
+.optionBtn:disabled {
+  cursor: default;
+}
+
+.optionBtn.selected {
+  border-color: rgba(240,192,64,0.5);
+  transform: scale(1.01);
+}
+
+.optionBtn.winning {
+  border-color: rgba(74,222,128,0.3);
+}
+
+.progressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
+}
+
+.progressBar.selected {
+  background: linear-gradient(90deg, rgba(240,192,64,0.15), rgba(240,128,64,0.1));
+}
+
+.progressBar.default {
+  background: rgba(255,255,255,0.04);
+}
+
+.optionContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.optionLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+.optionDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: rgba(255,255,255,0.1);
+}
+
+.optionDot.selected {
+  background: linear-gradient(135deg, #f0c040, #f08040);
+  box-shadow: 0 0 12px rgba(240,192,64,0.3);
+}
+
+.checkmark {
+  font-size: 0.7rem;
+  color: #0a0a0a;
+  font-weight: 800;
+}
+
+.optionText {
+  font-size: 0.95rem;
+  transition: color 0.2s;
+  word-break: break-word;
+}
+
+.optionText.selected {
+  color: #f0c040;
+  font-weight: 600;
+}
+
+.optionText.default {
+  color: #fff;
+  font-weight: 400;
+}
+
+.optionRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.voteCount {
+  color: rgba(255,255,255,0.3);
+  font-size: 0.8rem;
+}
+
+.percentBadge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.percentBadge.selected {
+  background: rgba(240,192,64,0.15);
+  color: #f0c040;
+}
+
+.percentBadge.default {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+}
+
+.votedBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.2rem;
+  background: rgba(74,222,128,0.06);
+  border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 12px;
+  color: #4ade80;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.votedIcon {
+  width: 22px;
+  height: 22px;
+  background: rgba(74,222,128,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.shareSection {
+  margin-top: 0.5rem;
+}
+
+.shareLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.2);
+  margin: 0 0 0.6rem 0;
+}
+
+.shareRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.shareInput {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  outline: none;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copyBtn {
+  padding: 0.7rem 1.1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+  100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error Page Styles */
+.errorPage {
+  min-height: 100vh;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.errorContainer {
+  text-align: center;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.errorCode {
+  font-size: 8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0c040, #f08040);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+  margin-bottom: 1rem;
+  font-family: 'DM Serif Display', serif;
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.errorSubtitle {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.errorBtn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.errorBtn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .center {
+    gap: 0.7rem;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+  }
+
+  .loadingText {
+    font-size: 0.8rem;
+  }
+
+  .errorIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .errorText {
+    font-size: 0.85rem;
+  }
+
+  .topRow {
+    margin-bottom: 1rem;
+  }
+
+  .liveIndicator {
+    gap: 0.35rem;
+  }
+
+  .question {
+    font-size: 1.8rem;
+  }
+
+  .hint {
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .optionsList {
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
+  .optionBtn {
+    padding: 0.8rem 1rem;
+    min-height: 44px;
+  }
+
+  .optionContent {
+    gap: 0.7rem;
+  }
+
+  .optionLeft {
+    gap: 0.6rem;
+  }
+
+  .optionDot {
+    width: 20px;
+    height: 20px;
+  }
+
+  .optionText {
+    font-size: 0.85rem;
+  }
+
+  .optionRight {
+    gap: 0.35rem;
+  }
+
+  .voteCount {
+    font-size: 0.75rem;
+  }
+
+  .percentBadge {
+    font-size: 0.75rem;
+  }
+
+  .votedBanner {
+    gap: 0.4rem;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.4rem;
+    font-size: 0.8rem;
+  }
+
+  .votedIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .shareSection {
+    margin-top: 0.3rem;
+  }
+
+  .shareLabel {
+    margin-bottom: 0.4rem;
+  }
+
+  .shareRow {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .mobileShareRow {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .shareInput {
+    font-size: 0.75rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .copyBtn {
+    padding: 0.8rem;
+    font-size: 0.75rem;
+    width: 100%;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: 1.5rem;
+  }
+
+  .question {
+    font-size: 2rem;
+  }
+}

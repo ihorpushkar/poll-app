@@ -1,0 +1,16 @@
+{
+  "name": "poll-app",
+  "version": "1.0.0",
+  "description": "A fullstack poll application with real-time voting",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npx wrangler dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["poll", "voting", "real-time", "react", "cloudflare-workers"],
+  "author": "",
+  "license": "ISC"
+}
